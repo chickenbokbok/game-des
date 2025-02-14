@@ -1,13 +1,17 @@
 using System;
-using System.Collections;
-using System.Numerics;
+using System.Diagnostics;
 using UnityEngine;
-
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed;
+    public float moveSpeed = 5f;
     public bool isMoving;
-    public UnityEngine.Vector2 input;
+    public Vector2 input;
+
+    //Start is called before the first frame update
+    void Start()
+    {
+
+    }
 
     //Update is called once per frame
     private void Update()
@@ -15,15 +19,12 @@ public class PlayerController : MonoBehaviour
         if (!isMoving)
         {
 
-            input.X = Input.GetAxisRaw("Horizontal");
-            input.y = Input.GetAxisRaw("Vertical");
-            if (input != UnityEngine.Vector2.Zero)
-            {
-                var targetPos = transform.position;
-                targetPos.x += input.x;
-                targetPos.y += input.y;
+            float moveX = Input.GetAxisRaw("Horizontal");
+            float moveY = Input.GetAxisRaw("Vertical");
+            
+            Vector2 move = new Vector2(moveX, moveY);
+            transform.Translate(move * moveSpeed * Time.deltaTime);
 
-                Coroutine coroutine = StartCoroutine(Move(targetPos));
 
 
             }
@@ -31,23 +32,4 @@ public class PlayerController : MonoBehaviour
 
 
         }
-    }
-
-    private IEnumerator Move(UnityEngine.Vector3 targetPos)
-    {
-        throw new NotImplementedException();
-    }
-
-    IEnumerator Move(Vector3 targetPos)
-    {
-        isMoving = true;
-        while ((targetPos - transform.position).sqrMagnitude > Mathf.Epsilon)
-        {
-            targetPos = Vector3.MoveTowards(targetPos, targetPos, moveSpeed * Time.deltaTime);
-            yield return null;
-        }
-        transform.position = targetPos;
-        isMoving = false;
-
-    }
 }
